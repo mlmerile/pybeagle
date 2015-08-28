@@ -5,5 +5,9 @@ setup(name='pybeagle',
       description='Beagle Wrapper',
       author='Thomas Dias-Alves',
       packages=['pybeagle'],
+      install_requires=[
+          'numpy',
+          'pandas'
+      ],
       test_suite='pybeagle.test',
       zip_safe=False)
