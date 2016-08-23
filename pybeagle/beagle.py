@@ -23,8 +23,10 @@ def convert_g_to_beagle3(G,file_output_geno,file_output_marker):
             return "A\tA"
         elif nb == 1:
             return "A\tC"
-        else:
+        elif nb == 2:
             return "C\tC"
+        else:
+            return "?\t?"
 
     with open(file_output_geno, 'w') as f:
         line = "I\t" + "id\t" +\
