@@ -55,7 +55,7 @@ def run_beagle(file_in,file_out,path_beagle, nthreads):
     	line = "java -Xmx1000m -jar {0} gt={1} out={2}".format(
         	path_beagle, file_in, file_out)
     else:
-	line = "java -Xmx1000m -jar {0} gt={1} out={2}, nthreads={3}".format(
+	line = "java -Xmx1000m -jar {0} gt={1} out={2} nthreads={3}".format(
         	path_beagle, file_in, file_out, nthreads)
 
     logging.info(line)
