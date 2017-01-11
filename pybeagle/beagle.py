@@ -50,14 +50,19 @@ def convert_beagle3_to_vcf(file_in_geno,file_in_marker,file_output,
     logging.info(line)
     subprocess.call(line,shell=True)
 
-def run_beagle(file_in,file_out,path_beagle):
-    line = "java -Xmx1000m -jar {0} gt={1} out={2}".format(
-        path_beagle, file_in, file_out)
+def run_beagle(file_in,file_out,path_beagle, nthreads):
+    if nthreads is None:
+    	line = "java -Xmx1000m -jar {0} gt={1} out={2}".format(
+        	path_beagle, file_in, file_out)
+    else:
+	line = "java -Xmx1000m -jar {0} gt={1} out={2}, nthreads={3}".format(
+        	path_beagle, file_in, file_out, nthreads)
+
     logging.info(line)
     subprocess.call(line,shell=True)
 
 def g_to_vcf(G, haploVCF,
-             path_beagle, path_beagle2vcf):
+             path_beagle, path_beagle2vcf, nthreads):
     try:
         tmp_dir = tempfile.mkdtemp(prefix='TmpBeagle')
         beagle_geno = os.path.join(tmp_dir,'geno_beagle.inp')
@@ -71,7 +76,7 @@ def g_to_vcf(G, haploVCF,
 
         convert_beagle3_to_vcf(beagle_geno, beagle_marker, geno_vcf,
                                path_beagle2vcf)
-        run_beagle(geno_vcf, haplodir_name, path_beagle)
+        run_beagle(geno_vcf, haplodir_name, path_beagle, nthreads)
         ungzip.ungzip(haplodir_name + ".vcf.gz")
     finally:
         try:
@@ -94,12 +99,12 @@ def haploVCF_to_matrix(haploVCF):
 
     return np.array(res).T
 
-def beagle_phase(G, path_beagle, path_beagle2vcf):
+def beagle_phase(G, path_beagle, path_beagle2vcf, nthreads=None):
     try:
         tmp_dir = tempfile.mkdtemp(prefix='TmpResBeagle')
         file_res = os.path.join(tmp_dir,'res_haplo.vcf')
 
-        g_to_vcf(G,file_res,path_beagle,path_beagle2vcf)
+        g_to_vcf(G,file_res,path_beagle,path_beagle2vcf, nthreads)
         return haploVCF_to_matrix(file_res)
     finally:
         try:
